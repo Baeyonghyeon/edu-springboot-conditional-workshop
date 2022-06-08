@@ -6,6 +6,8 @@ import org.springframework.boot.autoconfigure.condition.*;
 import org.springframework.context.annotation.*;
 import org.springframework.core.type.AnnotatedTypeMetadata;
 
+import java.util.Objects;
+
 @Configuration
 public class ConditionalDemoConfiguration {
 
@@ -14,10 +16,9 @@ public class ConditionalDemoConfiguration {
         public boolean matches(ConditionContext conditionContext, AnnotatedTypeMetadata annotatedTypeMetadata) {
             // TODO (1)  application.properties 파일에 test1 property 가 존재하면 true 를 반환하도록 수정하세요.
             // TODO (1)  アプリケーション.properties ファイルにテスト1 property が存在したらtrue を返却するように修正してください。
-
             // Hint property 가져 오기 conditionContext.getEnvironment().getProperty("test1")
             // Hint property 持って来るconditionContext.getEnvironment().getProperty( "test1")
-            return false;
+            return Objects.nonNull(conditionContext.getEnvironment().getProperty("test1"));
 
         }
     }
@@ -76,6 +77,11 @@ public class ConditionalDemoConfiguration {
      *
      * @return
      */
+    @Bean
+    public SayNoComponent sayNoComponentBean(){
+        return new SayNoComponent("NO");
+    }
+
     @ConditionalOnBean(SayNoComponent.class)
     @Bean
     public SayYesComponent sayYesComponentOnBean() {
@@ -124,7 +130,7 @@ public class ConditionalDemoConfiguration {
      * @return
      */
     @Bean
-    @ConditionalOnProperty(name="")
+    @ConditionalOnProperty(name="test2")
     public SayYesComponent sayYesComponentOnProperty() {
         return new SayYesComponent("ConditionalOnProperty");
     }
